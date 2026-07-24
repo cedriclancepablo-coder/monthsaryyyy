@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy 3rd Monthsary, Claire! 💖</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::after, *::before {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffe6ea 0%, #ffccd5 50%, #ffb3c1 100%);
+      color: #5c3d46;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Plastered Emoji Background Container */
+    .sticker-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .sticker-emoji {
+      position: absolute;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0.55;
+      filter: drop-shadow(0 2px 5px rgba(255, 105, 135, 0.2));
+      transition: transform 0.3s ease;
+    }
+
+    /* Floating Hearts Background */
+    .heart-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .heart-particle {
+      position: absolute;
+      bottom: -10%;
+      color: rgba(255, 105, 135, 0.4);
+      font-size: 20px;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Passcode Lock Screen */
+    #lock-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 230, 234, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #lock-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .lock-card {
+      background: rgba(255, 255, 255, 0.85);
+      padding: 30px 25px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(255, 105, 135, 0.2);
+      text-align: center;
+      max-width: 350px;
+      width: 100%;
+      border: 2px solid #ffb3c1;
+    }
+
+    .lock-card h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      color: #ff4d6d;
+      margin-bottom: 10px;
+    }
+
+    .lock-card p {
+      font-size: 0.9rem;
+      color: #7a525d;
+      margin-bottom: 20px;
+    }
+
+    .passcode-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .passcode-inputs input {
+      width: 45px;
+      height: 55px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      border: 2px solid #ffccd5;
+      border-radius: 12px;
+      outline: none;
+      background: #fff;
+      color: #ff4d6d;
+    }
+
+    .hint-btn {
+      background: none;
+      border: none;
+      color: #ff758f;
+      font-size: 0.85rem;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+    .unlock-btn {
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+      transition: transform 0.2s, background 0.3s;
+      width: 100%;
+    }
+
+    .unlock-btn:hover {
+      transform: translateY(-2px);
+      background: #ff2a54;
+    }
+
+    .error-msg {
+      color: #e63946;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* TikTok Blooming Flowers Overlay */
+    #flower-intro {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 998;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+    }
+
+    #flower-intro.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .night-sky {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(ellipse at top, #0c1834, #000 70%);
+    }
+
+    .flower-stage {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      transform: scale(0.85);
+      transform-origin: bottom center;
+    }
+
+    .flower {
+      position: absolute;
+      bottom: 5vmin;
+      transform-origin: bottom center;
+      z-index: 10;
+    }
+
+    .flower--1 { animation: moving-flower-1 4s linear infinite; }
+    .flower--1 .flower__line { height: 65vmin; animation: grow-stem 3s ease forwards; }
+
+    .flower--2 { left: 45%; transform: rotate(15deg); animation: moving-flower-2 4s linear infinite; }
+    .flower--2 .flower__line { height: 55vmin; animation: grow-stem 3.2s ease 0.3s forwards; }
+
+    .flower--3 { left: 55%; transform: rotate(-15deg); animation: moving-flower-3 4s linear infinite; }
+    .flower--3 .flower__line { height: 50vmin; animation: grow-stem 3.4s ease 0.5s forwards; }
+
+    .flower__line {
+      width: 1.5vmin;
+      height: 0;
+      background-image: linear-gradient(to top, #142544, #104d4e, #159c6b);
+      border-radius: 4vmin;
+    }
+
+    .flower__leafs {
+      position: absolute;
+      top: 1vmin;
+      left: 50%;
+      transform: translateX(-50%) rotate(-10deg);
+      width: 2vmin;
+      height: 2vmin;
+      animation: open-flower 2s ease 2.2s forwards;
+      opacity: 0;
+    }
+
+    .flower__leaf {
+      position: absolute;
+      left: 50%;
+      bottom: 2vmin;
+      transform: translateX(-50%);
+      width: 8vmin;
+      height: 14vmin;
+      background-image: linear-gradient(to bottom, #ffa0b4, #ff4d6d, #1a233a 99%);
+      clip-path: ellipse(50% 50% at 50% 50%);
+      transform-origin: center bottom;
+    }
+
+    .flower__leaf--1 { transform: translateX(-50%) rotate(-30deg); }
+    .flower__leaf--2 { transform: translateX(-50%) rotate(30deg); }
+    .flower__leaf--3 { transform: translateX(-50%) rotate(-60deg); }
+    .flower__leaf--4 { transform: translateX(-50%) rotate(60deg); }
+
+    .flower__white-circle {
+      position: absolute;
+      left: 50%;
+      top: -2vmin;
+      transform: translateX(-50%);
+      width: 9vmin;
+      height: 9vmin;
+      border-radius: 50%;
+      background-color: #fff;
+      filter: blur(1.5vmin);
+      opacity: 0.8;
+    }
+
+    .flower__light {
+      position: absolute;
+      bottom: 0vmin;
+      width: 1.2vmin;
+      height: 1.2vmin;
+      background-color: #ffe066;
+      border-radius: 50%;
+      filter: blur(0.2vmin);
+      animation: light-ans 4s linear infinite;
+    }
+
+    .intro-title-box {
+      position: absolute;
+      top: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 1.2s ease 2.8s;
+    }
+
+    #flower-intro.active .intro-title-box {
+      opacity: 1;
+    }
+
+    .intro-title-box h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3rem;
+      color: #ffb3c1;
+      text-shadow: 0 0 15px rgba(255, 179, 193, 0.8);
+      margin-bottom: 20px;
+    }
+
+    .open-letter-btn {
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 77, 109, 0.6);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .open-letter-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 30px rgba(255, 77, 109, 0.9);
+    }
+
+    @keyframes grow-stem { from { height: 0; } }
+    @keyframes open-flower {
+      0% { opacity: 0; transform: translateX(-50%) scale(0); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+    @keyframes moving-flower-1 { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg); } }
+    @keyframes moving-flower-2 { 0%, 100% { transform: rotate(15deg); } 50% { transform: rotate(18deg); } }
+    @keyframes moving-flower-3 { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(-18deg); } }
+    @keyframes light-ans {
+      0% { opacity: 0; transform: translateY(0vmin) scale(0); }
+      50% { opacity: 1; transform: translateY(-25vmin) scale(1.2); }
+      100% { opacity: 0; transform: translateY(-50vmin) scale(0); }
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 80px 20px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+
+    .container.unlocked { opacity: 1; }
+
+    .spotify-player {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 20px;
+      max-width: 360px;
+      margin: 0 auto 35px auto;
+      box-shadow: 0 8px 25px rgba(255, 105, 135, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .vinyl-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin-bottom: 15px;
+    }
+
+    .vinyl-record {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, #222 25%, #111 30%, #333 45%, #111 50%, #222 70%);
+      border-radius: 50%;
+      position: relative;
+      animation: spin 8s linear infinite;
+      animation-play-state: paused;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .vinyl-record.playing { animation-play-state: running; }
+
+    .vinyl-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid #ff4d6d;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vinyl-center img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .track-info { margin-bottom: 12px; }
+    .track-title { font-weight: 600; font-size: 1rem; color: #5c3d46; }
+    .track-artist { font-size: 0.8rem; color: #a06373; }
+
+    .player-controls button {
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+    }
+
+    .hero-section { margin-bottom: 40px; }
+
+    .main-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3.2rem;
+      color: #ff2a54;
+      text-shadow: 2px 2px 4px rgba(255, 182, 193, 0.5);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #7a3e4d;
+    }
+
+    .letter-card {
+      background: #fffef8;
+      background-image: repeating-linear-gradient(transparent, transparent 31px, #e6e0cc 32px);
+      background-size: 100% 32px;
+      padding: 40px 30px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 50px;
+      position: relative;
+    }
+
+    .letter-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 60px;
+      height: 100%;
+      width: 1px;
+      background: #e1b4b4;
+    }
+
+    .letter-card h3 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      color: #ff4d6d;
+      margin-bottom: 15px;
+      padding-left: 50px;
+    }
+
+    .letter-card p {
+      font-family: 'Caveat', cursive;
+      font-size: 1.25rem;
+      line-height: 2.2;
+      color: #4a2e35;
+      padding-left: 50px;
+      text-align: left;
+    }
+
+    /* Gallery Section Improvements */
+    .gallery-section h3 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.7rem;
+      color: #ff2a54;
+      margin-bottom: 6px;
+    }
+
+    .gallery-subtext {
+      font-size: 0.95rem;
+      color: #8c5363;
+      font-weight: 600;
+      margin-bottom: 35px;
+      letter-spacing: 0.3px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 30px 20px;
+      padding: 10px;
+    }
+
+    /* Varied Polaroid Layouts & Washi Tapes */
+    .polaroid {
+      background: #fff;
+      padding: 14px 14px 25px 14px;
+      border-radius: 4px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      transform: rotate(calc(var(--r, 0) * 1deg)) translateY(calc(var(--y, 0) * 1px));
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+    }
+
+    .polaroid:hover {
+      transform: scale(1.08) rotate(0deg) translateY(-5px);
+      box-shadow: 0 15px 30px rgba(255, 77, 109, 0.25);
+      z-index: 10;
+    }
+
+    /* Simulated Washi Tape Details */
+    .polaroid::before {
+      content: '';
+      position: absolute;
+      width: 70px;
+      height: 22px;
+      background: rgba(255, 182, 193, 0.7);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      z-index: 2;
+    }
+
+    .tape-top::before {
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      background: rgba(255, 179, 193, 0.75);
+    }
+
+    .tape-left::before {
+      top: -8px;
+      left: 10px;
+      transform: rotate(-15deg);
+      background: rgba(255, 204, 213, 0.8);
+    }
+
+    .tape-right::before {
+      top: -8px;
+      right: 10px;
+      transform: rotate(15deg);
+      background: rgba(255, 154, 178, 0.7);
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      border-radius: 2px;
+      margin-bottom: 12px;
+    }
+
+    .polaroid p {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.25rem;
+      color: #5c3d46;
+      font-weight: 600;
+    }
+
+    /* Interactive Photo Modal Popup */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #fff;
+      padding: 20px 20px 25px 20px;
+      border-radius: 16px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      transform: scale(0.85);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      border: 3px solid #ffccd5;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-card img {
+      width: 100%;
+      max-height: 340px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .modal-card h4 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      color: #ff2a54;
+      margin-bottom: 8px;
+    }
+
+    .modal-card p {
+      font-family: 'Caveat', cursive;
+      font-size: 1.35rem;
+      color: #5c3d46;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
+    .modal-close-btn {
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 25px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      background: #ff2a54;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Plastered Emoji Background -->
+  <div class="sticker-bg" id="stickerContainer"></div>
+
+  <!-- Floating Hearts Background -->
+  <div class="heart-bg" id="heartContainer"></div>
+
+  <!-- Audio Player Source -->
+  <audio id="bgAudio" loop src="c:\Users\ADMIN\OneDrive\Documents\hapimonthsari\Libu-Libong Buwan (Uuwian) - Kyle Raphael (Lyric Video).mp3"></audio>
+
+  <!-- Passcode Lock Screen Overlay -->
+  <div id="lock-screen">
+    <div class="lock-card">
+      <h2>Ano muna Password? :>>🔒</h2>
+      <p>Enter the 4-digit secret passcode to open your gift!</p>
+      
+      <div class="passcode-inputs">
+        <input type="password" maxlength="1" id="code1" autofocus />
+        <input type="password" maxlength="1" id="code2" />
+        <input type="password" maxlength="1" id="code3" />
+        <input type="password" maxlength="1" id="code4" />
+      </div>
+
+      <button class="hint-btn" onclick="showHint()">Need a hint?</button>
+      <p id="hintText" style="display:none; font-size:0.85rem; color:#ff4d6d; margin-bottom:15px;">
+        💡 Hint: ang genesis ng atin pagmamahal :>
+      </p>
+
+      <button class="unlock-btn" onclick="checkPasscode()">Unlock 💕</button>
+      <p class="error-msg" id="errorMsg">HALA D NYA ALAM!!!</p>
+    </div>
+  </div>
+
+  <!-- TikTok Blooming Night Flowers Intro Overlay -->
+  <div id="flower-intro">
+    <div class="night-sky"></div>
+    
+    <div class="intro-title-box">
+      <h1>For My Lovable Gf🌸</h1>
+      <button class="open-letter-btn" onclick="revealMainWebsite()">Read My Letter 💌</button>
+    </div>
+
+    <div class="flower-stage">
+      <div class="flower flower--1">
+        <div class="flower__leafs">
+          <div class="flower__leaf flower__leaf--1"></div>
+          <div class="flower__leaf flower__leaf--2"></div>
+          <div class="flower__leaf flower__leaf--3"></div>
+          <div class="flower__leaf flower__leaf--4"></div>
+          <div class="flower__white-circle"></div>
+          <div class="flower__light"></div>
+        </div>
+        <div class="flower__line"></div>
+      </div>
+
+      <div class="flower flower--2">
+        <div class="flower__leafs">
+          <div class="flower__leaf flower__leaf--1"></div>
+          <div class="flower__leaf flower__leaf--2"></div>
+          <div class="flower__leaf flower__leaf--3"></div>
+          <div class="flower__leaf flower__leaf--4"></div>
+          <div class="flower__white-circle"></div>
+          <div class="flower__light"></div>
+        </div>
+        <div class="flower__line"></div>
+      </div>
+
+      <div class="flower flower--3">
+        <div class="flower__leafs">
+          <div class="flower__leaf flower__leaf--1"></div>
+          <div class="flower__leaf flower__leaf--2"></div>
+          <div class="flower__leaf flower__leaf--3"></div>
+          <div class="flower__leaf flower__leaf--4"></div>
+          <div class="flower__white-circle"></div>
+          <div class="flower__light"></div>
+        </div>
+        <div class="flower__line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Website Content -->
+  <div class="container" id="mainContainer">
+
+    <!-- Spotify Vinyl Music Widget -->
+    <div class="spotify-player">
+      <div class="vinyl-container">
+        <div class="vinyl-record" id="vinyl">
+          <div class="vinyl-center">
+            <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\Libu-Libong_Uuwian.jpg" alt="Album Cover">
+          </div>
+        </div>
+      </div>
+      <div class="track-info">
+        <div class="track-title">Libu-Libong Buwan (Uuwian) - Kyle Raphael🎵</div>
+        <div class="track-artist">a song for you :></div>
+      </div>
+      <div class="player-controls">
+        <button id="playBtn" onclick="toggleAudio()">▶</button>
+      </div>
+    </div>
+
+    <!-- Main Header -->
+    <div class="hero-section">
+      <h1 class="main-title">Happy 3rd Monthsary Lovie</h1>
+    </div>
+
+    <!-- Love Letter Section -->
+    <div class="letter-card">
+      <h3>Dearest Claire,</h3>
+      <p>
+        Happy 3rd monthsary, bebii hehe~ for 91 days our relationship it has bloomed into something that is special and warm. you have shown me a type love that is only seen or experienced through fictions, poems, or romcoms and made me feel whats it like to love and to be loved.
+      </p>
+      <br />
+      <p>
+        your tender smile, sweet laugh, the way your nose crinkles when you smile or pout, how your hair falls into place everytime, when your eyes gaze everytime into mine, every detail and every small things makes me love you even more than i thought i would. it seems like everyday i find new things to cherished and admire you no matter how little it may be.
+      </p>
+      <br />
+      <p>
+        just by being in your presence ive felt peace, exhilaration, and emotional safety. like an espresso that gives you a boost to get through a grueling day or that feeling being bathed on sunlight. this feeling, this type of love that writers inspire to create poems that transcends time is what i feel for you. so effortlessly beautiful in every way. you have bewitched me both body and soul.
+      </p>
+      <br />
+      <p>
+        thank you for being my other half and heres to many months and years to come.
+      </p>
+      <br />
+      <p style="text-align: right; font-weight: 600; font-family: 'Dancing Script', cursive; font-size: 1.4rem; color: #ff2a54;">
+        Forever & always yours, <br/>❤️
+      </p>
+    </div>
+
+    <!-- Memory Photo Gallery Section -->
+    <div class="gallery-section">
+      <h3>Our 7-Month of Memories 📸</h3>
+      <p class="gallery-subtext">✨ please click nyo po lovie each photo hehe ;)) ✨</p>
+      
+      <div class="photo-grid">
+
+        <div class="polaroid tape-top" style="--r: -4; --y: 5;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_0337.jpg', 'Where It All Started 💕', 'the first date! and also na muntik na tayo mag hiwalay because na mix ko yung PM sa Am T_T still the first one is always the special one :>')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_0337.jpg" alt="Memory 1" />
+          <p>Where it all started 💕</p>
+        </div>
+
+        <div class="polaroid tape-left" style="--r: 3; --y: -3;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_5730.jpg', 'Cute Date Moments ☕', 'i actually ate a big meal before this run and himala hindi ako nagsuka habang tumatakbo BWHAHHAHAHA. meeting both of your closest friends and seeing little things what makes you -YOU through your friends in small things. :>')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_5730.jpg" alt="Memory 2" />
+          <p>Cute date moments ☕</p>
+        </div>
+
+        <div class="polaroid tape-right" style="--r: -2; --y: 8;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_9902.jpg', 'My Favorite Smile 😊', 'HEHEHEHE nothing i just like this smile so much >< so pretty and cute!')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_9902.jpg" alt="Memory 3" />
+          <p>My favorite smile 😊</p>
+        </div>
+
+        <div class="polaroid tape-top" style="--r: 5; --y: -5;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_9472.jpg', 'My Favorite Smile #2 💖', 'also my favorite smile?! GRABE so beautiful and cute. elegant in every way :)')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_9472.jpg" alt="Memory 4" />
+          <p>My favorite smile 2 💖</p>
+        </div>
+
+        <div class="polaroid tape-left" style="--r: -3; --y: 4;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_9607.jpg', 'My Favorite Smile #3 !!!', 'ANOTHER ONE?! GRABE KANA hehehehe its giving nak tayo ka dyan picturan kita BWHAHAHAHAH')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_9607.jpg" alt="Memory 5" />
+          <p>My favorite smile 3 !!!</p>
+        </div>
+
+        <div class="polaroid tape-right" style="--r: 4; --y: -2;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.McGhBXMUAOdQ4S1ddtPdnYu8DY9h7PbUpJJlwxv_-UM.jpg', 'My Favorite Smile #4 :))', 'HEHEHEHE GRABE ANOTHER ONE HOHO. so eepy and cute and so smart looking!!! ><')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.McGhBXMUAOdQ4S1ddtPdnYu8DY9h7PbUpJJlwxv_-UM.jpg" alt="Memory 6" />
+          <p>My favorite smile 4 :))</p>
+        </div>
+
+        <div class="polaroid tape-top" style="--r: -5; --y: 6;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.y0ArKSc40xesGap7-aPJDOSqLL1cFR23ZDPiUqFI0qA.jpg', 'MWAH MWAH!!! ><', 'TABA NG PISNGI NAYAN HEHEHEHE another cute photo of uis >< GIGIL NA GIGIL SA ISAT ISA E WAHAHHAHAHA!')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.y0ArKSc40xesGap7-aPJDOSqLL1cFR23ZDPiUqFI0qA.jpg" alt="Memory 7" />
+          <p>MWAH MWAH!!! ><</p>
+        </div>
+
+        <div class="polaroid tape-left" style="--r: 2; --y: -6;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.5rghyS8A6hayQwuTmwKA9tWATntUBXdgzwa-TOVZ2Ic.jpg', 'My Cutie Patootie GF Hihi', 'YOU REALLY LOOK LIKE THAT ONE MEME NA PLUSHIE EHEHEHHE ITS CUTE EVERYTIME I LOOK AT IT MY HEART SQUEEZE ANYTIME')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.5rghyS8A6hayQwuTmwKA9tWATntUBXdgzwa-TOVZ2Ic.jpg" alt="Memory 8" />
+          <p>MY CUTIE PATOOTIE GF HIHI</p>
+        </div>
+
+        <div class="polaroid tape-right" style="--r: -4; --y: 3;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\asfgafs.JPG', 'Hangout with Katie!! 🐾', 'HEHEHEH KASAMA SI KATIE! another one of those instances where i can see a bit of u in every person ure close with ><')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\23DA721B-0339-4FE3-95D9-DA1E94108E28.JPG" alt="Memory 9" />
+          <p>HANGOUT KASAMA SI KATIE!!</p>
+        </div>
+
+        <div class="polaroid tape-top" style="--r: 3; --y: -4;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\FullSizeRender.jpg', 'Movie Dateee!! 🍿', 'WAHAHAHAHA this movie was underwhelming to me kase i expected more but still a fun movie regardless hehehe I STILL REMEMBER UR LITTLE SCREAM TUWING MAY CHASE SCENES BWHAHAHA')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\FullSizeRender.jpg" alt="Memory 10" />
+          <p>MOVIE DATEEE!!</p>
+        </div>
+
+        <div class="polaroid tape-left" style="--r: -2; --y: 5;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.TtNtAwjbmRajmiyTWzmP0KFrDZXVK_6dPz08JqM2ofU.jpg', 'My Smarty Girl Studying ><!!!', 'HEHEHEHE seeing my bebi work so hard and do total effort sa pag aaral just inspires me to be better in not only my studies but just in everything!!!')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.TtNtAwjbmRajmiyTWzmP0KFrDZXVK_6dPz08JqM2ofU.jpg" alt="Memory 11" />
+          <p>my smarty girl studying ><!!!</p>
+        </div>
+
+        <div class="polaroid tape-right" style="--r: 5; --y: -3;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.x_jVrddnhW7xz091ika9C8Ai3aHFVr3qa9NoEYu-7HY.jpg', '5k Run Together!!! 🏃‍♀️', 'A CUTE PHOTO OF THE 5K RUN HEHEHEHE IT CAPTURES OUR LOVE PERFECTLY shout out sayo camera man! my feet was dying i cant feel it during this :<')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\att.x_jVrddnhW7xz091ika9C8Ai3aHFVr3qa9NoEYu-7HY.jpg" alt="Memory 12" />
+          <p>5k run!!!</p>
+        </div>
+
+        <div class="polaroid tape-top" style="--r: -3; --y: 2;" onclick="openModal('C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_0013.JPG', 'My Fav Photo Of Us :)', 'my favorite photo of us all time hehehe it just captures out silliness together hoho. i even specifically handpick each meme reference for it to match what ive envisioned it hehehe')">
+          <img src="C:\Users\ADMIN\OneDrive\Documents\hapimonthsari\IMG_0013.JPG" alt="Memory 13" />
+          <p>my fav photo of us :)</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Interactive Photo Modal -->
+  <div class="modal-overlay" id="photoModal" onclick="closeModalOnOutside(event)">
+    <div class="modal-card">
+      <img id="modalImg" src="" alt="Memory Preview" />
+      <h4 id="modalTitle">Memory Title</h4>
+      <p id="modalCaption">Memory Caption Note...</p>
+      <button class="modal-close-btn" onclick="closeModal()">Close 💕</button>
+    </div>
+  </div>
+
+  <script>
+    // Plastered Background Emojis Generation
+    const stickerContainer = document.getElementById('stickerContainer');
+    const emojiList = ['🧸', '🌸', '🐱', '💖', '🎀', '✨', '💌', '🌷'];
+
+    function placeStickers() {
+      const emojiCount = 12;
+      for (let i = 0; i < emojiCount; i++) {
+        const emoji = document.createElement('span');
+        emoji.classList.add('sticker-emoji');
+        emoji.textContent = emojiList[Math.floor(Math.random() * emojiList.length)];
+        
+        emoji.style.top = (Math.random() * 85 + 5) + 'vh';
+        emoji.style.left = (Math.random() * 85 + 5) + 'vw';
+        emoji.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+        emoji.style.fontSize = (Math.random() * 1.2 + 1.8) + 'rem';
+        
+        stickerContainer.appendChild(emoji);
+      }
+    }
+    placeStickers();
+
+    // Passcode Auto-Focus
+    const inputs = document.querySelectorAll('.passcode-inputs input');
+    inputs.forEach((input, index) => {
+      input.addEventListener('keyup', (e) => {
+        if (e.key >= 0 && e.key <= 9) {
+          if (index < inputs.length - 1) inputs[index + 1].focus();
+        } else if (e.key === 'Backspace') {
+          if (index > 0) inputs[index - 1].focus();
+        }
+      });
+    });
+
+    function showHint() {
+      document.getElementById('hintText').style.display = 'block';
+    }
+
+    function checkPasscode() {
+      const code = Array.from(inputs).map(i => i.value).join('');
+      const correctCode = "1215";
+
+      if (code === correctCode) {
+        document.getElementById('lock-screen').classList.add('hidden');
+        
+        const flowerIntro = document.getElementById('flower-intro');
+        flowerIntro.classList.add('active');
+        
+        playAudio();
+      } else {
+        const error = document.getElementById('errorMsg');
+        error.style.display = 'block';
+        inputs.forEach(i => i.value = '');
+        inputs[0].focus();
+      }
+    }
+
+    function revealMainWebsite() {
+      const flowerIntro = document.getElementById('flower-intro');
+      flowerIntro.style.opacity = '0';
+      
+      setTimeout(() => {
+        flowerIntro.classList.remove('active');
+        document.getElementById('mainContainer').classList.add('unlocked');
+      }, 1000);
+    }
+
+    // Music Player Controls
+    const audio = document.getElementById('bgAudio');
+    const vinyl = document.getElementById('vinyl');
+    const playBtn = document.getElementById('playBtn');
+
+    function playAudio() {
+      audio.play().then(() => {
+        vinyl.classList.add('playing');
+        playBtn.textContent = '❚❚';
+      }).catch(e => console.log("Audio play blocked", e));
+    }
+
+    function toggleAudio() {
+      if (audio.paused) {
+        audio.play();
+        vinyl.classList.add('playing');
+        playBtn.textContent = '❚❚';
+      } else {
+        audio.pause();
+        vinyl.classList.remove('playing');
+        playBtn.textContent = '▶';
+      }
+    }
+
+    // Floating Hearts Generation
+    const heartContainer = document.getElementById('heartContainer');
+    const heartSymbols = ['💖', '💕', '🌸', '✨', '💗'];
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart-particle');
+      heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+      heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+      heartContainer.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 9000);
+    }
+    setInterval(createHeart, 500);
+
+    // Interactive Polaroid Modal Popup Logic
+    function openModal(imgSrc, title, caption) {
+      document.getElementById('modalImg').src = imgSrc;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalCaption').textContent = caption;
+      document.getElementById('photoModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('photoModal').classList.remove('active');
+    }
+
+    function closeModalOnOutside(event) {
+      if (event.target.id === 'photoModal') {
+        closeModal();
+      }
+    }
+  </script>
+</body>
+</html>
